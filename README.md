@@ -34,6 +34,44 @@ cmake -B build -DMCP_SSL=ON
 cmake --build build --config Release
 ```
 
+### Integrate with bazelmod
+
+#### Bazelmod
+
+```starlark
+bazel_dep(name = "cpp_mcp", version = "2025.05.30")
+
+git_override(
+    module_name = "cpp_mcp",
+    remote = "https://github.com/your-username/cpp-mcp.git",
+    commit = "b0c6f6168e2a568ae6099fc2a14c330084270fed",
+)
+```
+
+- [ ] Publish to BCR to avoid this
+
+#### Workspace (Legacy)
+
+If your project doesn't support Bazelmod, you can use add the following to your `WORKSPACE` file.
+
+```starlark
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+CPP_MCP_COMMIT = "b0c6f6168e2a568ae6099fc2a14c330084270fed"
+http_archive(
+    name = "cpp_mcp",
+    strip_prefix = "cpp-mcp-{0}".format(CPP_MCP_COMMIT),
+    url = "https://github.com/adithyabsk/cpp-mcp/archive/{0}.tar.gz".format(CPP_MCP_COMMIT),
+)
+
+# Load and call your dependencies setup function
+load("@cpp_mcp//bazel:repositories.bzl", "cpp_mcp_repositories")
+cpp_mcp_repositories()
+
+load("@cpp_mcp//bazel:deps.bzl", "cpp_mcp_deps")
+cpp_mcp_deps()
+```
+
 ## Adopters
 
 Here are some open-source projects that are using this repository.  

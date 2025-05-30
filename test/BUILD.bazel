@@ -1,0 +1,13 @@
+load("@rules_cc//cc:defs.bzl", "cc_test")
+
+package(default_visibility = ["//visibility:private"])
+
+cc_test(
+    name = "mcp_test",
+    srcs = glob(["*.cpp"]),
+    deps = [
+        "//:cpp_mcp",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
+    ],
+)

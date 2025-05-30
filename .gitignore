@@ -104,3 +104,7 @@ poetry.toml
 # Test models for lora adapters
 
 # Local scripts
+
+# Bazel
+bazel-*
+MODULE.bazel.lock

@@ -1,0 +1,26 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+# Third-party header-only libraries
+cc_library(
+    name = "json",
+    includes = ["."],
+    hdrs = ["json.hpp"],
+)
+
+cc_library(
+    name = "base64",
+    includes = ["."],
+    hdrs = ["base64.hpp"],
+)
+
+cc_library(
+    name = "httplib", 
+    includes = ["."],
+    hdrs = ["httplib.h"],
+    defines = select({
+        "//:ssl_enabled": ["CPPHTTPLIB_OPENSSL_SUPPORT"],
+        "//conditions:default": [],
+    }),
+)

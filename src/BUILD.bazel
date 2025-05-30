@@ -1,0 +1,46 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+package(default_visibility = ["//:__pkg__"])
+
+cc_library(
+    name = "mcp_message_impl",
+    srcs = ["mcp_message.cpp"],
+    deps = ["//include:mcp_message"],
+)
+
+cc_library(
+    name = "mcp_tool_impl", 
+    srcs = ["mcp_tool.cpp"],
+    deps = ["//include:mcp_tool"],
+)
+
+cc_library(
+    name = "mcp_resource_impl",
+    srcs = ["mcp_resource.cpp"], 
+    deps = [
+        "//include:mcp_resource",
+    ],
+)
+
+cc_library(
+    name = "mcp_server_impl",
+    srcs = ["mcp_server.cpp"],
+    deps = [
+        "//include:mcp_server",
+    ],
+)
+
+cc_library(
+    name = "mcp_sse_client_impl",
+    srcs = ["mcp_sse_client.cpp"],
+    deps = [
+        "//include:mcp_sse_client",
+        "//common:base64",
+    ],
+)
+
+cc_library(
+    name = "mcp_stdio_client_impl", 
+    srcs = ["mcp_stdio_client.cpp"],
+    deps = ["//include:mcp_stdio_client"],
+)

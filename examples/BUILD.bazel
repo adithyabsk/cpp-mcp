@@ -1,0 +1,35 @@
+load("@rules_cc//cc:defs.bzl", "cc_binary")
+
+package(default_visibility = ["//visibility:private"])
+
+cc_binary(
+    name = "sse_client_example",
+    srcs = ["sse_client_example.cpp"],
+    deps = [
+        "//:mcp_client",
+    ],
+)
+
+cc_binary(
+    name = "stdio_client_example", 
+    srcs = ["stdio_client_example.cpp"],
+    deps = [
+        "//:mcp_client",
+    ],
+)
+
+cc_binary(
+    name = "server_example",
+    srcs = ["server_example.cpp"],
+    deps = [
+        "//:mcp_server",
+    ],
+)
+
+cc_binary(
+    name = "agent_example",
+    srcs = ["agent_example.cpp"],
+    deps = [
+        "//:cpp_mcp",
+    ],
+)

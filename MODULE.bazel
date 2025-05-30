@@ -1,0 +1,12 @@
+"""Module definition for cpp_mcp."""
+
+module(
+    name = "cpp_mcp",
+    version = "2025.05.30",
+)
+
+bazel_dep(name = "rules_cc", version = "0.0.17")
+bazel_dep(name = "bazel_skylib", version = "1.7.1")
+bazel_dep(name = "platforms", version = "0.0.10")
+
+bazel_dep(name = "googletest", version = "1.16.0", dev_dependency = True)

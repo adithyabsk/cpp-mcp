@@ -1,0 +1,40 @@
+# Enable Bzlmod
+common --enable_bzlmod
+
+# Build configuration
+build --cxxopt=-std=c++17
+build --host_cxxopt=-std=c++17
+
+# SSL support flag
+build:ssl --@cpp_mcp//:enable_ssl=true
+
+# Platform-specific optimizations
+build:linux --copt=-O3
+build:macos --copt=-O3
+build:windows --copt=/O2
+
+# Debug configuration
+build:debug --compilation_mode=dbg
+build:debug --copt=-g
+build:debug --strip=never
+
+# Release configuration  
+build:release --compilation_mode=opt
+build:release --copt=-DNDEBUG
+
+# Default to release mode
+build --config=release
+
+# Test configuration
+test --test_output=errors
+test --test_summary=detailed
+test --test_verbose_timeout_warnings
+
+# Enable modern C++ features
+build --copt=-Wall
+build --copt=-Wextra
+build --host_copt=-Wall
+build --host_copt=-Wextra
+
+# Suppress warnings for third-party code
+build --per_file_copt=external/.*@-w

@@ -1,0 +1,65 @@
+load("@bazel_skylib//rules:common_settings.bzl", "bool_flag")
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+# High-level library targets that combine headers and implementations
+
+# Core MCP library (messages, tools, resources)
+cc_library(
+    name = "mcp_core",
+    deps = [
+        "//include:mcp_message",
+        "//include:mcp_tool", 
+        "//include:mcp_resource",
+        "//include:mcp_logger",
+        "//src:mcp_message_impl",
+        "//src:mcp_tool_impl",
+        "//src:mcp_resource_impl",
+    ],
+)
+
+# Client libraries
+cc_library(
+    name = "mcp_client",
+    deps = [
+        ":mcp_core",
+        "//include:mcp_client",
+        "//include:mcp_sse_client", 
+        "//include:mcp_stdio_client",
+        "//src:mcp_sse_client_impl",
+        "//src:mcp_stdio_client_impl",
+    ],
+)
+
+# Server library 
+cc_library(
+    name = "mcp_server",
+    deps = [
+        ":mcp_core",
+        "//include:mcp_server",
+        "//include:mcp_thread_pool",
+        "//src:mcp_server_impl",
+    ],
+)
+
+# Complete MCP library
+cc_library(
+    name = "cpp_mcp",
+    deps = [
+        ":mcp_client",
+        ":mcp_server", 
+    ],
+)
+
+# Configuration settings
+config_setting(
+    name = "ssl_enabled",
+    flag_values = {"//:enable_ssl": "true"},
+)
+
+# Feature flags
+bool_flag(
+    name = "enable_ssl",
+    build_setting_default = False,
+)

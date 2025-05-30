@@ -1,0 +1,126 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+package(default_visibility = ["//:__pkg__", "//src:__subpackages__"])
+
+# Header-only libraries
+cc_library(
+    name = "mcp_logger",
+    includes = ["."],
+    hdrs = ["mcp_logger.h"],
+)
+
+cc_library(
+    name = "mcp_thread_pool", 
+    includes = ["."],
+    hdrs = ["mcp_thread_pool.h"],
+)
+
+# Headers with implementation dependencies
+cc_library(
+    name = "mcp_message",
+    includes = ["."],
+    hdrs = ["mcp_message.h"],
+    deps = ["//common:json"],
+)
+
+cc_library(
+    name = "mcp_tool",
+    includes = ["."],
+    hdrs = ["mcp_tool.h"], 
+    deps = [":mcp_message"],
+)
+
+cc_library(
+    name = "mcp_resource",
+    includes = ["."],
+    hdrs = ["mcp_resource.h"],
+    deps = [
+        ":mcp_message",
+        "//common:base64",
+    ],
+)
+
+cc_library(
+    name = "mcp_client",
+    includes = ["."],
+    hdrs = ["mcp_client.h"],
+    deps = [
+        ":mcp_message", 
+        ":mcp_tool",
+        ":mcp_logger",
+    ],
+)
+
+cc_library(
+    name = "mcp_sse_client",
+    includes = ["."],
+    hdrs = ["mcp_sse_client.h"],
+    defines = select({
+        "//:ssl_enabled": [
+            "MCP_SSL",
+            "CPPHTTPLIB_OPENSSL_SUPPORT", 
+        ],
+        "//conditions:default": [],
+    }) + select({
+        "@platforms//os:windows": ["_CRT_SECURE_NO_WARNINGS"],
+        "//conditions:default": [],
+    }),
+    linkopts = select({
+        "@platforms//os:linux": ["-pthread"],
+        "@platforms//os:macos": ["-pthread"], 
+        "//conditions:default": [],
+    }),
+    deps = [
+        ":mcp_client",
+        ":mcp_tool",
+        ":mcp_message",
+        ":mcp_logger",
+        "//common:httplib",
+    ],
+)
+
+cc_library(
+    name = "mcp_stdio_client",
+    includes = ["."],
+    hdrs = ["mcp_stdio_client.h"],
+    linkopts = select({
+        "@platforms//os:linux": ["-pthread"],
+        "@platforms//os:macos": ["-pthread"],
+        "//conditions:default": [],
+    }),
+    deps = [
+        ":mcp_client", 
+        ":mcp_message",
+        ":mcp_tool",
+        ":mcp_logger",
+    ],
+)
+
+cc_library(
+    name = "mcp_server",
+    includes = ["."],
+    hdrs = ["mcp_server.h"], 
+    defines = select({
+        "//:ssl_enabled": [
+            "MCP_SSL",
+            "CPPHTTPLIB_OPENSSL_SUPPORT",
+        ],
+        "//conditions:default": [],
+    }) + select({
+        "@platforms//os:windows": ["_CRT_SECURE_NO_WARNINGS"],
+        "//conditions:default": [],
+    }),
+    linkopts = select({
+        "@platforms//os:linux": ["-pthread"],
+        "@platforms//os:macos": ["-pthread"],
+        "//conditions:default": [],
+    }),
+    deps = [
+        ":mcp_message",
+        ":mcp_resource", 
+        ":mcp_tool",
+        ":mcp_thread_pool",
+        ":mcp_logger",
+        "//common:httplib",
+    ],
+)
